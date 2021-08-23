@@ -1,23 +1,49 @@
-import React from "react";
-import { Box, Center, Container, Text } from "@chakra-ui/react";
+import React, { useContext } from "react";
+import { Button, ButtonGroup, Center, Flex, Text } from "@chakra-ui/react";
+
+import { LoginWithGoogle } from "../firebase/auth";
+import NotifyContext from "../context/notify";
 
 const LoginView: React.FC = () => {
+  const notify = useContext(NotifyContext);
+  const AuthGoogle = async () => {
+    try {
+      await LoginWithGoogle();
+      notify.NewAlert({ msg: "Authenticated", status: "success" });
+    } catch (error) {
+      notify.NewAlert({
+        msg: "Error occured while authenticating",
+        description: error.message,
+        status: "error",
+      });
+    }
+  };
+
   return (
     <Center w="100vw" h="100vh">
-      <Container width="350px">
+      <Flex
+        direction="column"
+        justify="center"
+        align="center"
+        width="350px"
+        boxShadow="lg"
+        rounded="lg"
+        backgroundColor="white"
+        py={7}
+      >
         <Text align="center" paddingY="2" fontSize="lg">
-          Login
+          Join with EIES-QnA with
         </Text>
-        <Box
-          backgroundColor="white"
-          paddingY="2"
-          paddingX="4"
-          boxShadow="lg"
-          rounded="lg"
-        >
-          <Text>Facebook</Text>
-        </Box>
-      </Container>
+
+        <ButtonGroup>
+          <Button colorScheme="red" onClick={AuthGoogle}>
+            Google
+          </Button>
+          <Button colorScheme="blue" disabled>
+            Facebook
+          </Button>
+        </ButtonGroup>
+      </Flex>
     </Center>
   );
 };
