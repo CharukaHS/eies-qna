@@ -1,12 +1,35 @@
 import React from "react";
-import { Box, Flex } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  Divider,
+  Flex,
+  useDisclosure,
+} from "@chakra-ui/react";
 
-const HomeView: React.FC = () => (
-  <Flex>
-    <Box>
-      <h1>Home Page</h1>
-    </Box>
-  </Flex>
-);
+import Topbar from "../components/topbar";
+import NewQuestionBox from "../components/newquiz";
+import QuizCard from "../components/quiz";
+
+const HomeView: React.FC = () => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  return (
+    <>
+      <Topbar />
+      <NewQuestionBox isOpen={isOpen} onClose={onClose} />
+      <Flex mt="35px">
+        <Container maxW="xl">
+          <Button colorScheme="teal" onClick={onOpen}>
+            Ask a new question
+          </Button>
+          <Divider my="15px" />
+          <QuizCard />
+          <QuizCard />
+        </Container>
+      </Flex>
+    </>
+  );
+};
 
 export default HomeView;
