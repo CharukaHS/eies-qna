@@ -1,8 +1,24 @@
 import { db } from "./firebase";
-import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  Unsubscribe,
+} from "firebase/firestore";
 import { GetUserDataForFirestore } from "./auth";
 
-interface QuestionType {
+/**
+ * Firestore question document
+ *
+ * @export
+ * @interface QuestionType
+ */
+export interface QuestionType {
+  docId?: string;
   userId: string;
   displayName: string;
   photoUrl?: string | null;
@@ -34,4 +50,34 @@ const FirestoreNewQuestion = async (question: string) => {
   });
 };
 
-export { FirestoreNewQuestion };
+/**
+ * Listen to firestore doc inserts realtime
+ *
+ * @param {React.Dispatch<React.SetStateAction<QuestionType[]>>} state
+ * @return {*}  {Unsubscribe} run the unsubscriber onDismount
+ */
+const FirestoreListenToQuestions = (
+  state: React.Dispatch<React.SetStateAction<QuestionType[]>>
+): Unsubscribe => {
+  // order query by timestamp
+  const q = query(
+    collection(db, "questions"),
+    orderBy("timestamp", "asc"),
+    limit(50)
+  );
+  const unsub = onSnapshot(q, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      // only dealing with newly added docs
+      if (change.type !== "added") return;
+
+      const data = change.doc.data() as QuestionType;
+      data.docId = change.doc.id;
+      console.log(data);
+      state((s) => [data, ...s]);
+    });
+  });
+
+  return unsub;
+};
+
+export { FirestoreNewQuestion, FirestoreListenToQuestions };

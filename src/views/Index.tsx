@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Container,
@@ -11,8 +11,21 @@ import Topbar from "../components/topbar";
 import NewQuestionBox from "../components/newquiz";
 import QuizCard from "../components/quiz";
 
+import {
+  FirestoreListenToQuestions,
+  QuestionType,
+} from "../firebase/firestore";
+
 const HomeView: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [questions, setquestions] = useState<QuestionType[]>([]);
+
+  useEffect(() => {
+    const unsub = FirestoreListenToQuestions(setquestions);
+    return () => {
+      unsub();
+    };
+  }, []);
 
   return (
     <>
@@ -24,8 +37,16 @@ const HomeView: React.FC = () => {
             Ask a new question
           </Button>
           <Divider my="15px" />
-          <QuizCard />
-          <QuizCard />
+          {questions.map((q) => {
+            return (
+              <QuizCard
+                key={q.docId}
+                question={q.question}
+                username={q.displayName}
+                photoUrl={q.photoUrl}
+              />
+            );
+          })}
         </Container>
       </Flex>
     </>
