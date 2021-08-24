@@ -28,10 +28,23 @@ const AuthGetUsername = () => {
 };
 
 /**
+ * Returns necessary user data for firestore saves
+ *
+ * @return {*}
+ */
+const GetUserDataForFirestore = () => {
+  const displayName = auth.currentUser?.displayName;
+  const userId = auth.currentUser?.uid;
+  const photoUrl = auth.currentUser?.photoURL;
+
+  return { displayName, userId, photoUrl };
+};
+
+/**
  * Logout firebase auth
  */
 const LogOut = async () => {
   await signOut(auth);
 };
 
-export { AuthGetUsername, LoginWithGoogle, LogOut };
+export { AuthGetUsername, LoginWithGoogle, GetUserDataForFirestore, LogOut };
