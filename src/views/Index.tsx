@@ -12,6 +12,7 @@ import Topbar from "../components/topbar";
 import NewQuestionBox from "../components/newquiz";
 import QuizCard from "../components/quiz";
 import QuizCardSkeleton from "../components/quizskeleton";
+import Footer from "../components/footer";
 
 import {
   FirestoreListenToQuestions,
@@ -31,15 +32,19 @@ const HomeView: React.FC = () => {
   }, []);
 
   return (
-    <>
+    <Flex minH="100vh" width="100vw" direction="column">
       <Topbar />
+
       <NewQuestionBox isOpen={isOpen} onClose={onClose} />
-      <Flex mt="35px">
+
+      <Flex as="main" my="35px" direction="column">
         <Container maxW="xl">
           <Button colorScheme="teal" onClick={onOpen}>
             Ask a new question
           </Button>
+
           <Divider my="15px" />
+
           {/* show skeleton card if data is still fetching */}
           {isLoading && (
             <>
@@ -70,7 +75,9 @@ const HomeView: React.FC = () => {
           )}
         </Container>
       </Flex>
-    </>
+
+      <Footer />
+    </Flex>
   );
 };
 
