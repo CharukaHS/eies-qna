@@ -36,15 +36,15 @@ const NewQuestionBox: React.FC<newquizProps> = ({ isOpen, onClose }) => {
     try {
       await FirestoreNewQuestion(quiz);
       notify.NewAlert({ msg: "Question submitted", status: "success" });
+
+      // close the modal if success
+      onClose();
     } catch (error) {
       notify.NewAlert({
         msg: "Error occured while submitting the quiz",
         description: error,
         status: "error",
       });
-
-      // close the modal if success
-      onClose();
     } finally {
       setsubmitting(false);
     }
