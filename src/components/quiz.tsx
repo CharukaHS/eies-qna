@@ -25,10 +25,12 @@ const QuizCard: React.FC<quizProps> = ({
       >
         <HStack>
           <Avatar size="sm" name={username} src={photoUrl || undefined} />
-          <Text>{username}</Text>
-          <Text fontSize="sm" color="gray">
-            {time}
-          </Text>
+          <Flex justify="space-between" flexGrow={1}>
+            <Text>{username}</Text>
+            <Text fontSize="sm" color="gray" align="right">
+              {time}
+            </Text>
+          </Flex>
         </HStack>
         <Text>{question}</Text>
       </Flex>
