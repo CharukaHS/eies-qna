@@ -44,6 +44,7 @@ const HomeView: React.FC = () => {
                 question={q.question}
                 username={q.displayName}
                 photoUrl={q.photoUrl}
+                time={q.localtime}
               />
             );
           })}

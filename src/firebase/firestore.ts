@@ -7,6 +7,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  Timestamp,
   Unsubscribe,
 } from "firebase/firestore";
 import { GetUserDataForFirestore } from "./auth";
@@ -23,7 +24,44 @@ export interface QuestionType {
   displayName: string;
   photoUrl?: string | null;
   question: string;
+  timestamp?: {
+    seconds: number;
+    nanoseconds: number;
+  };
+  localtime?: string;
 }
+
+/**
+ * Convert firestore timestamp to local time string
+ *
+ * @param {{
+ *   seconds: number;
+ *   nanoseconds: number;
+ * }} [t] firestore timestamp
+ * @return {string}  Locale timestring
+ */
+const FirestoreTimestampToLocale = (t?: {
+  seconds: number;
+  nanoseconds: number;
+}): string => {
+  if (!t) {
+    // if no timestamp is saved in firestore
+    // return current timestamp as a fail safe
+    return new Date().toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  }
+
+  let x = new Timestamp(t.seconds, t.nanoseconds).toMillis();
+  // add 5.30h of milliseconds to convert into UTC +5.30
+  x += 19080000;
+
+  return new Date(x).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
 
 /**
  * Insert new question to firestore
@@ -72,7 +110,7 @@ const FirestoreListenToQuestions = (
 
       const data = change.doc.data() as QuestionType;
       data.docId = change.doc.id;
-      console.log(data);
+      data.localtime = FirestoreTimestampToLocale(data.timestamp);
       state((s) => [data, ...s]);
     });
   });

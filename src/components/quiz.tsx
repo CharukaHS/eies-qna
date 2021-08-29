@@ -5,9 +5,15 @@ interface quizProps {
   question: string;
   username: string;
   photoUrl?: string | null;
+  time?: string;
 }
 
-const QuizCard: React.FC<quizProps> = ({ question, username, photoUrl }) => {
+const QuizCard: React.FC<quizProps> = ({
+  question,
+  username,
+  photoUrl,
+  time,
+}) => {
   return (
     <>
       <Flex
@@ -20,6 +26,9 @@ const QuizCard: React.FC<quizProps> = ({ question, username, photoUrl }) => {
         <HStack>
           <Avatar size="sm" name={username} src={photoUrl || undefined} />
           <Text>{username}</Text>
+          <Text fontSize="sm" color="gray">
+            {time}
+          </Text>
         </HStack>
         <Text>{question}</Text>
       </Flex>
