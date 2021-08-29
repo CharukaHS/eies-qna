@@ -92,10 +92,12 @@ const FirestoreNewQuestion = async (question: string) => {
  * Listen to firestore doc inserts realtime
  *
  * @param {React.Dispatch<React.SetStateAction<QuestionType[]>>} state
+ * @param {React.Dispatch<React.SetStateAction<boolean>>} isLoading
  * @return {*}  {Unsubscribe} run the unsubscriber onDismount
  */
 const FirestoreListenToQuestions = (
-  state: React.Dispatch<React.SetStateAction<QuestionType[]>>
+  state: React.Dispatch<React.SetStateAction<QuestionType[]>>,
+  isLoading: React.Dispatch<React.SetStateAction<boolean>>
 ): Unsubscribe => {
   // order query by timestamp
   const q = query(
@@ -113,6 +115,7 @@ const FirestoreListenToQuestions = (
       data.localtime = FirestoreTimestampToLocale(data.timestamp);
       state((s) => [data, ...s]);
     });
+    isLoading(false);
   });
 
   return unsub;

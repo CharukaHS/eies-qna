@@ -4,12 +4,14 @@ import {
   Container,
   Divider,
   Flex,
+  Text,
   useDisclosure,
 } from "@chakra-ui/react";
 
 import Topbar from "../components/topbar";
 import NewQuestionBox from "../components/newquiz";
 import QuizCard from "../components/quiz";
+import QuizCardSkeleton from "../components/quizskeleton";
 
 import {
   FirestoreListenToQuestions,
@@ -18,10 +20,11 @@ import {
 
 const HomeView: React.FC = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isLoading, setisLoading] = useState<boolean>(true);
   const [questions, setquestions] = useState<QuestionType[]>([]);
 
   useEffect(() => {
-    const unsub = FirestoreListenToQuestions(setquestions);
+    const unsub = FirestoreListenToQuestions(setquestions, setisLoading);
     return () => {
       unsub();
     };
@@ -37,6 +40,16 @@ const HomeView: React.FC = () => {
             Ask a new question
           </Button>
           <Divider my="15px" />
+          {/* show skeleton card if data is still fetching */}
+          {isLoading && (
+            <>
+              <QuizCardSkeleton />
+              <QuizCardSkeleton />
+              <QuizCardSkeleton />
+            </>
+          )}
+
+          {/* show questions */}
           {questions.map((q) => {
             return (
               <QuizCard
@@ -48,6 +61,13 @@ const HomeView: React.FC = () => {
               />
             );
           })}
+
+          {/* no question message */}
+          {!questions.length && !isLoading && (
+            <Text align="center" color="gray">
+              No questions so far, be the first one to ask a question ✨
+            </Text>
+          )}
         </Container>
       </Flex>
     </>
