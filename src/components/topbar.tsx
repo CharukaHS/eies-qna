@@ -31,7 +31,9 @@ const Topbar: React.FC = () => {
         <Heading size="md">EIES QNA</Heading>
 
         <Flex direction="row" align="center">
-          <Text mr="10px">{AuthGetUsername()}</Text>
+          <Text mr="10px" fontSize={{ base: "0px", sm: "md" }}>
+            {AuthGetUsername()}
+          </Text>
           <Button onClick={HandleSignout}>Signout</Button>
         </Flex>
       </Flex>
